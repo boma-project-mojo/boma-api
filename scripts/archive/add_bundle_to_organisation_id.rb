@@ -1,0 +1,8 @@
+Organisation.find(1).update! bundle_id: "com.kambe.boma"
+Organisation.find(2).update! bundle_id: "com.greenbelt.festapp"
+Organisation.find(3).update! bundle_id: "com.cheltenhamjazz.boma"
+Organisation.find(4).update! bundle_id: "com.festivalcongress.boma"
+Organisation.find(5).update! bundle_id: "com.openfest.boma"
+Organisation.find(6).update! bundle_id: "com.nyege.boma"
+Organisation.find(7).update! bundle_id: "com.rover.boma"
+Organisation.find(8).update! bundle_id: "com.boom.boma"

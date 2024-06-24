@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+
+    <style>
+      html, body, div, span, applet, object, iframe,
+      h1, h2, h3, h4, h5, h6, blockquote, pre,
+      a, abbr, acronym, address, big, cite, code,
+      del, dfn, em, font, img, ins, kbd, q, s, samp,
+      small, strike, strong, sub, sup, tt, var,
+      b, u, i, center,
+      dl, dt, dd, ol, ul, li,
+      fieldset, form, label, legend,
+      table, caption, tbody, tfoot, thead, tr, th, td {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+      }
+
+      p
+      {
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+        margin-top:0;
+      }
+
+      body {
+        line-height: 1;
+      }
+      ol, ul {
+        list-style: none;
+        list-style-position:outside;
+      }
+      blockquote, q {
+        quotes: none;
+      }
+
+      /* remember to define focus styles! */
+      :focus {
+        outline: 0;
+      }
+
+      /* remember to highlight inserts somehow! */
+      ins {
+        text-decoration: none;
+      }
+      del {
+        text-decoration: line-through;
+      }
+
+      /* tables still need 'cellspacing="0"' in the markup */
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      blockquote, q
+      {
+        quotes: none;
+      }
+
+      /*
+      Safari doesn't support the quotes attribute, so we do this instead.
+      */
+      blockquote:before, blockquote:after, q:before, q:after
+      {
+        /*
+        CSS 2; used to remove quotes in case "none" fails below.
+        */
+        content: "";
+        /*
+        CSS 2.1; will remove quotes if supported, and override the above.
+        User-agents that don't understand "none" should ignore it, and
+        keep the above value. This is here for future compatibility,
+        though I'm not 100% convinced that it's a good idea...
+        */
+        content: none;
+      }
+
+      a
+      {
+        color:none;
+      }
+
+      /* END OF RESET */
+
+      * {
+        color: #000;
+        font-family: sans-serif;
+      }
+
+      h1 {
+        font-size: 40px;
+        line-height: 60px;
+      }
+
+      h2 {
+        font-size: 30px;
+        line-height: 45px;
+      }
+
+      h3 {
+        font-size: 25px;
+        line-height: 48px;
+      }
+
+      h4 {
+        font-size: 20px;
+        line-height: 36px;
+      }
+
+      h5 {
+        font-size: 19px;
+        line-height: 25px;
+      }
+
+      p, ul {
+        font-size: 18px;
+        line-height: 24px;
+        margin-bottom: 18px;
+      }
+
+      hr {
+        height: 10px;
+        border-bottom: 2px solid black;
+        border-top: none;
+      }
+
+      hr.double {
+        height:9px;
+        border-bottom:4px solid black;
+      }
+
+      .page { 
+        display:block; 
+        clear:both; 
+        page-break-after:always; 
+      }
+
+      .cover-page {
+        height: 1000px;
+        display: table;
+        margin: auto;
+      }
+
+      .cover-page-inner {
+        height: 100px;
+        margin: auto;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+        padding: 0 20px;
+        width: 100%;
+      }
+    </style>
+  
+  </head>
+  <body>
+    <div id="content">
+      <div class="page cover-page">
+        <div class="cover-page-inner">
+          <h1><%= @festival.name %></h1>
+          <h3><%= @festival.start_date.strftime("%a #{@festival.start_date.day.ordinalize} %b") %> - <%= @festival.end_date.strftime("%a #{@festival.end_date.day.ordinalize} %b %Y") %> </h3>
+        </div>
+      </div>
+
+      <h1>Venues</h1>
+      <% @venues.each do |venue| %>  
+        <div class="page">
+          <h2 id="<%= venue.name.parameterize %>"><%= venue.name.titleize %></h2>
+          <%= raw venue.description %>
+          <% venue.events.where(aasm_state: [:published, :cancelled]).order('start_time ASC').group_by { |e| e.filter_day }.each do |day| %>
+            <h3><%= day[1][0].start_time.strftime("%a %e") %></h3>
+            <% day[1].each do |event| %>
+              <h5 class='<% event.cancelled? ? "cancelled" : "" %>'><%= event.date_string_start %> - <%= event.date_string_end %></h5>
+              <h4 class='<% event.cancelled? ? "cancelled" : "" %>'><%= event.name %></h4>
+              <p class='<% event.cancelled? ? "cancelled" : "" %>'><%= event.short_description %></p>
+            <% end %>
+            <hr>
+          <% end %>
+          <hr class="double">
+        </div>
+      <% end %>
+
+      <h1>All Events sorted by time</h1>
+      
+      <% @festival.events.where(aasm_state: [:published, :cancelled]).order("created_at ASC").group_by { |e| e.filter_day }.each do |day| %>
+        <div class="page">
+          <h3><%= day[1][0].start_time.strftime("%a %e") %></h3>
+          <% day[1].each do |event| %>
+            <h2 id="<%= event.name.parameterize %>"><%= event.name.titleize %></h2>
+            <h5 class='<% event.cancelled? ? "cancelled" : "" %>'><%= event.start_time.strftime("%a %e") %>, <%= event.date_string_start %> - <%= event.date_string_end %> @ <%= event.venue.name.titleize rescue nil %></h5>
+            <p class='<% event.cancelled? ? "cancelled" : "" %>'><%= event.short_description %></p>
+          <% end %>
+        </div>
+        <hr>
+      <% end %>  
+      <hr class="double">
+
+    </div>
+  </body>
+</html>

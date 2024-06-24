@@ -1,0 +1,56 @@
+<div id="wrap">
+	<div class="va-outer">
+		<div class="va-inner">
+			<div class="container">
+				<h1>Claim Token</h1>
+				<div id="token-type-image" style="background-image:url('<%= @token.token_type.image_base64 %>');">	</div>
+				<h2><%= @token.token_type.name %></h2>
+				<p>To claim your token click the link below to open the app and start the process of mining the token.  </p>
+				<a href="<%= @token.festival.organisation.app_url_schema %>://launch?claimTokenNonce=<%= @token.token_hash %>" class="btn" id="claim-token">Claim Token</a>
+			  
+			  <div class="input-group">
+					<input id="claim_link_token" type="text" class="form-control js-copytextarea" aria-label="" value="<%= @token.token_hash %>">
+					<span class="input-group-addon copy-button">Copy</span>
+				</div>
+
+				<small>Alternatively, copy this unique id, open the app, head to the Wallet and click Redeem Token</small>
+				
+				<div id="download-app-links">
+					<h5>Don't have the app installed?</h5>
+					<a target="_blank" class='btn small white' href="http://play.google.com/store/apps/details?id=<%= @token.festival.organisation.bundle_id %>">Download app for Android</a> 
+					<a target="_blank" class='btn small white' href="https://apps.apple.com/tc/app/<%= @token.festival.organisation.apple_app_id %>">Download app for iOS</a> 
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+(function() {
+
+	var copyTextareaBtn = document.querySelector('.copy-button');
+
+	copyTextareaBtn.addEventListener('click', function(event) {
+	  var copyTextarea = document.querySelector('.js-copytextarea');
+	  copyTextarea.focus();
+	  copyTextarea.select();
+
+	  try {
+	    var successful = document.execCommand('copy');
+	    var msg = successful ? 'successful' : 'unsuccessful';
+
+	    alert('Text copied!')
+
+	    console.log('Copying text command was ' + msg);
+	  } catch (err) {
+	    console.log('Oops, unable to copy');
+	  }
+	});
+
+})();
+
+
+
+</script>

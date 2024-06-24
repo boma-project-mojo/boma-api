@@ -1,0 +1,24 @@
+# stages:
+#     - test
+# test-job:
+#     stage: test
+#     image: cimg/ruby:2.7.4-node
+#     services:
+#       - postgres:12.0
+#     variables:
+#       db_test_name: test_name
+#       db_test_user: test_user
+#       db_test_password: test_password
+#       RAILS_ENV: test
+#       DISABLE_SPRING: 1
+#       BUNDLE_PATH: vendor/bundle
+#       couchdb_host: https://write.staging.couchdb.boma.community/
+#       couchdb_user: admin
+#       couchdb_password: "Bzxvtph.89rURWi9NM!M.wErKKNMQ4Pgi77z!H_CjKV2"
+#       DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+#     script:
+#       - gem install bundler -v 2.1.4
+#       - bundle install
+#       - bundle exec rails db:create db:schema:load --trace
+#       - bundle exec rails db:migrate
+#       - bundle exec rspec 

@@ -1,0 +1,23 @@
+production:
+  url: <%= ENV['DATABASE_CONNECTION_POOL_URL'] || ENV['DATABASE_URL'] %>
+  prepared_statements: false
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  variables:
+    statement_timeout: <%= ENV["STATEMENT_TIMEOUT"] || "15s" %>
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: <%= ENV['db_name']  %>
+  pool: 5
+  username: <%= ENV['db_user']  %>
+  password: <%= ENV['db_password']  %>
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: <%= ENV['db_test_name']  %>
+  pool: 5
+  username: <%= ENV['db_test_user']  %>
+  password: <%= ENV['db_test_password']  %>

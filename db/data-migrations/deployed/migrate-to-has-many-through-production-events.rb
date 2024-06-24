@@ -1,0 +1,1 @@
+AppData::Event.all.each {|e| AppData::EventProduction.create!(event_id: e.id, production_id: e.production_id)}
